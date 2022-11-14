@@ -6,12 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.*
 
 private const val TAG = "CrimeListFragment"
 
@@ -37,6 +40,7 @@ class CrimeListFragment : Fragment() {
 
         val titleTextView : TextView = view.findViewById(R.id.crime_title)
         val dateTextView : TextView = view.findViewById(R.id.crime_date)
+        val solvedImageView: ImageView = view.findViewById(R.id.crime_solved)
 
         init {
             itemView.setOnClickListener(this)
@@ -45,7 +49,10 @@ class CrimeListFragment : Fragment() {
         fun bind(crime: Crime){
             this.crime = crime
             titleTextView.text = this.crime.title
-            dateTextView.text = this.crime.date.toString()
+            val df = SimpleDateFormat("EEEE, MMM, dd, yyyy", Locale.US)
+            dateTextView.text = df.format(this.crime.date)
+            solvedImageView.visibility = if (crime.isSolved){View.VISIBLE}
+                else {View.GONE}
 
         }
 
