@@ -1,6 +1,5 @@
 package com.bignerdranch.android.criminalintent
 
-import Crime
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,16 +21,12 @@ class CrimeListFragment : Fragment() {
 
     private lateinit var crimeRecycleView : RecyclerView
 
-    private var adapter : CrimeAdapter? = null
+    private var adapter : CrimeAdapter? = CrimeAdapter(emptyList())
 
     private val crimeListViewModel : CrimeListViewModel by lazy{
         ViewModelProvider(this)[CrimeListViewModel::class.java]
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "Total crimes: ${crimeListViewModel.crimes.size}")
-    }
 
     private inner class CrimeHolder(view: View)
         : RecyclerView.ViewHolder(view) , View.OnClickListener{
@@ -97,13 +92,25 @@ class CrimeListFragment : Fragment() {
         crimeRecycleView = view.findViewById(R.id.crime_recycle_view) as RecyclerView
         crimeRecycleView.layoutManager = LinearLayoutManager(context)
 
-        updateUI()
+        crimeRecycleView.adapter= adapter
 
         return view
     }
 
-    private fun updateUI() {
-        val crimes = crimeListViewModel.crimes
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        crimeListViewModel.crimeListLiveData.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { crimes ->
+                crimes?.let {
+                    Log.i(TAG, "Got crimes ${crimes.size}")
+                    updateUI(crimes)
+                }
+            }
+        )
+    }
+
+    private fun updateUI(crimes: List<Crime>) {
         adapter = CrimeAdapter(crimes)
         crimeRecycleView.adapter = adapter
     }
