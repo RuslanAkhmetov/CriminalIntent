@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bignerdranch.android.criminalintent.databinding.FragmentCrimeBinding
 
-
-
 class CrimeFragment : Fragment(){
 
     // Scoped to the lifecycle of the fragment's view (between onCreateView and onDestroyView)
